@@ -2,8 +2,6 @@ import re
 import urllib.request
 import json
 from typing import List, Dict, Any, Optional
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from sqlalchemy.orm import Session
 from . import models
 from .config import settings
@@ -63,6 +61,9 @@ def retrieve_top_chunks(query: str, chunks: List[Dict[str, Any]], top_n: int = 3
     texts = [c["text"] for c in chunks]
     
     try:
+        from sklearn.feature_extraction.text import TfidfVectorizer
+        from sklearn.metrics.pairwise import cosine_similarity
+
         # Vectorize chunks and query
         vectorizer = TfidfVectorizer(stop_words='english')
         tfidf_matrix = vectorizer.fit_transform(texts)

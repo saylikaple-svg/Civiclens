@@ -1,9 +1,5 @@
 import os
 import datetime
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-import joblib
 from sqlalchemy.orm import Session
 from . import models
 
@@ -16,45 +12,47 @@ def train_and_save_model():
     a real Scikit-Learn RandomForest classifier and regressor for delay prediction.
     """
     print("Training synthetic project delay prediction model...")
-    np.random.seed(42)
-    n_samples = 1000
-    
-    # Generate random features
-    progress = np.random.uniform(0, 100, n_samples)
-    elapsed_ratio = np.random.uniform(0.05, 1.5, n_samples) # time elapsed / planned duration
-    budget_utilized = np.random.uniform(0, 120, n_samples)
-    delayed_milestones = np.random.randint(0, 8, n_samples)
-    
-    # Logic for target labels (high probability of delay if progress is low and time ratio is high)
-    # Target 1: Delay Classification (0 or 1)
-    delay_prob = 1 / (1 + np.exp(-(
-        -3.5 + 4.5 * elapsed_ratio - 0.05 * progress + 0.02 * budget_utilized + 0.5 * delayed_milestones
-    )))
-    is_delayed = (delay_prob > 0.5).astype(int)
-    
-    # Target 2: Delay Duration in Days
-    expected_delay = np.maximum(0, (elapsed_ratio * 150 - progress * 1.2 + delayed_milestones * 15 + np.random.normal(0, 20, n_samples)))
-    expected_delay = np.round(expected_delay).astype(int)
-    
-    # Build DataFrames
-    X = pd.DataFrame({
-        "progress": progress,
-        "elapsed_ratio": elapsed_ratio,
-        "budget_utilized": budget_utilized,
-        "delayed_milestones": delayed_milestones
-    })
-    
-    # Train classifiers & regressors
-    clf = RandomForestClassifier(n_estimators=50, random_state=42)
-    clf.fit(X, is_delayed)
-    
-    reg = RandomForestRegressor(n_estimators=50, random_state=42)
-    reg.fit(X, expected_delay)
-    
-    # Save models
-    joblib.dump(clf, MODEL_PATH)
-    joblib.dump(reg, REGRESSOR_PATH)
-    print("AI Models trained and saved successfully.")
+    try:
+        import numpy as np
+        import pandas as pd
+        from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+        import joblib
+
+        np.random.seed(42)
+        n_samples = 1000
+        
+        # Generate random features
+        progress = np.random.uniform(0, 100, n_samples)
+        elapsed_ratio = np.random.uniform(0.05, 1.5, n_samples)
+        budget_utilized = np.random.uniform(0, 120, n_samples)
+        delayed_milestones = np.random.randint(0, 8, n_samples)
+        
+        delay_prob = 1 / (1 + np.exp(-(
+            -3.5 + 4.5 * elapsed_ratio - 0.05 * progress + 0.02 * budget_utilized + 0.5 * delayed_milestones
+        )))
+        is_delayed = (delay_prob > 0.5).astype(int)
+        
+        expected_delay = np.maximum(0, (elapsed_ratio * 150 - progress * 1.2 + delayed_milestones * 15 + np.random.normal(0, 20, n_samples)))
+        expected_delay = np.round(expected_delay).astype(int)
+        
+        X = pd.DataFrame({
+            "progress": progress,
+            "elapsed_ratio": elapsed_ratio,
+            "budget_utilized": budget_utilized,
+            "delayed_milestones": delayed_milestones
+        })
+        
+        clf = RandomForestClassifier(n_estimators=50, random_state=42)
+        clf.fit(X, is_delayed)
+        
+        reg = RandomForestRegressor(n_estimators=50, random_state=42)
+        reg.fit(X, expected_delay)
+        
+        joblib.dump(clf, MODEL_PATH)
+        joblib.dump(reg, REGRESSOR_PATH)
+        print("AI Models trained and saved successfully.")
+    except Exception as e:
+        print(f"Error training models: {e}")
 
 # Auto-train models if not exist when module is imported
 if not os.path.exists(MODEL_PATH) or not os.path.exists(REGRESSOR_PATH):
@@ -111,6 +109,8 @@ def predict_delay(project: models.Project, db: Session):
     features = get_project_features(project, db)
     
     try:
+        import joblib
+        import pandas as pd
         # Load models
         clf = joblib.load(MODEL_PATH)
         reg = joblib.load(REGRESSOR_PATH)
