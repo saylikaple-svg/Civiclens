@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-gov-navy: #1e3a8a;
+  --color-gov-navyalt: #172554;
+  --color-gov-gold: #b45309;
+  --color-gov-lightgold: #fef3c7;
+  --color-gov-bg: #f4f6f9;
+  --color-gov-card: #ffffff;
+  --color-gov-border: #e2e8f0;
+  --color-gov-text: #1e293b;
+  --color-gov-muted: #64748b;
+  
+  --font-serif: "Playfair Display", Georgia, ui-serif, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+.dark {
+  --color-gov-navy: #93c5fd;
+  --color-gov-navyalt: #0b0f19;
+  --color-gov-gold: #fbbf24;
+  --color-gov-lightgold: #1e293b;
+  --color-gov-bg: #090d16;
+  --color-gov-card: #131926;
+  --color-gov-border: #1f2a40;
+  --color-gov-text: #f3f4f6;
+  --color-gov-muted: #9ca3af;
+}
+
+/* Base styles using CSS custom variables */
+body {
+  background-color: var(--color-gov-bg);
+  color: var(--color-gov-text);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, .font-serif-gov {
+  font-family: var(--font-serif);
+  color: var(--color-gov-navy);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Dark Mode Leaflet Map Tiles (100% Free OpenStreetMap, No API Key, No Watermark) */
+.dark-map .leaflet-tile-pane,
+.dark .dark-map .leaflet-tile-pane {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+/* Remove Leaflet attribution control badge */
+.leaflet-control-attribution {
+  display: none !important;
+}

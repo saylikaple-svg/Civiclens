@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Firebase build and deployment files
 /firebase-debug.log
 /firebase-debug.*.log
@@ -26,3 +27,12 @@ yarn-error.log*
 
 # Environment files (local configs)
 /.env.*
+=======
+venv/
+__pycache__/
+*.pyc
+*.db
+.env
+node_modules/
+dist/
+>>>>>>> 888ab00 (Initial commit: Add CivicLens frontend and backend)
