@@ -45,23 +45,31 @@ def startup_event():
     Runs on backend start.
     Creates SQLite database and seeds default data if tables are empty.
     """
-    print("Initializing Database...")
-    Base.metadata.create_all(bind=engine)
-    
-    # Check if database has users. If not, auto-seed realistic demo projects.
-    db = SessionLocal()
     try:
-        user_count = db.query(User).count()
+        print("Initializing Database...")
+        os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+        Base.metadata.create_all(bind=engine)
+        
+        db = SessionLocal()
+        user_count = 0
+        try:
+            user_count = db.query(User).count()
+        except Exception as query_err:
+            print(f"Database query error during startup: {query_err}")
+        finally:
+            db.close()
+            
         if user_count == 0:
             print("No users found. Triggering database seeder...")
-            from .seed import seed_db
-            seed_db()
+            try:
+                from .seed import seed_db
+                seed_db()
+            except Exception as seed_err:
+                print(f"Database seeder error during startup: {seed_err}")
         else:
             print("Database already contains data. Skipping seeder.")
     except Exception as e:
-        print(f"Startup database initialization error: {e}")
-    finally:
-        db.close()
+        print(f"Startup database initialization warning: {e}")
 
 @app.get("/")
 def read_root():

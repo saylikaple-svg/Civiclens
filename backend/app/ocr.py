@@ -1,6 +1,5 @@
 import os
 import re
-import pdfplumber
 
 def extract_text_from_pdf(file_path: str) -> str:
     """
@@ -8,6 +7,7 @@ def extract_text_from_pdf(file_path: str) -> str:
     """
     text_content = []
     try:
+        import pdfplumber
         with pdfplumber.open(file_path) as pdf:
             for i, page in enumerate(pdf.pages):
                 page_text = page.extract_text()
