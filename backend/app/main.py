@@ -43,33 +43,13 @@ app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads"
 def startup_event():
     """
     Runs on backend start.
-    Creates SQLite database and seeds default data if tables are empty.
+    Creates SQLite database and seeds default data safely.
     """
     try:
-        print("Initializing Database...")
-        os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-        Base.metadata.create_all(bind=engine)
-        
-        db = SessionLocal()
-        user_count = 0
-        try:
-            user_count = db.query(User).count()
-        except Exception as query_err:
-            print(f"Database query error during startup: {query_err}")
-        finally:
-            db.close()
-            
-        if user_count == 0:
-            print("No users found. Triggering database seeder...")
-            try:
-                from .seed import seed_db
-                seed_db()
-            except Exception as seed_err:
-                print(f"Database seeder error during startup: {seed_err}")
-        else:
-            print("Database already contains data. Skipping seeder.")
+        from .database import init_db_once
+        init_db_once()
     except Exception as e:
-        print(f"Startup database initialization warning: {e}")
+        print(f"Startup notice: {e}")
 
 @app.get("/")
 def read_root():
