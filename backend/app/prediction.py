@@ -3,8 +3,12 @@ import datetime
 from sqlalchemy.orm import Session
 from . import models
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "delay_model.joblib")
-REGRESSOR_PATH = os.path.join(os.path.dirname(__file__), "delay_regressor.joblib")
+if os.environ.get("VERCEL"):
+    MODEL_PATH = "/tmp/delay_model.joblib"
+    REGRESSOR_PATH = "/tmp/delay_regressor.joblib"
+else:
+    MODEL_PATH = os.path.join(os.path.dirname(__file__), "delay_model.joblib")
+    REGRESSOR_PATH = os.path.join(os.path.dirname(__file__), "delay_regressor.joblib")
 
 def train_and_save_model():
     """
@@ -55,11 +59,12 @@ def train_and_save_model():
         print(f"Error training models: {e}")
 
 # Auto-train models if not exist when module is imported
-if not os.path.exists(MODEL_PATH) or not os.path.exists(REGRESSOR_PATH):
-    try:
+try:
+    if not os.path.exists(MODEL_PATH) or not os.path.exists(REGRESSOR_PATH):
         train_and_save_model()
-    except Exception as e:
-        print(f"Error training models: {e}")
+except Exception as e:
+    print(f"Notice: Model training skipped or failed: {e}")
+
 
 def get_project_features(project: models.Project, db: Session):
     """

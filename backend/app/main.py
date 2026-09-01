@@ -35,9 +35,12 @@ app.include_router(reports.router)
 app.include_router(audit.router)
 app.include_router(feedback.router)
 
-# Mount static uploads directory for document previews
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+# Mount static uploads directory for document previews safely
+try:
+    os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=settings.UPLOAD_DIR), name="uploads")
+except Exception as e:
+    print(f"Notice: Failed to mount /uploads static directory: {e}")
 
 @app.on_event("startup")
 def startup_event():
