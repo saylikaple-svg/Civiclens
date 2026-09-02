@@ -2,27 +2,22 @@
   "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "backend/**"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.py"
+      "destination": "https://civiclens-dt2k.onrender.com/api/$1"
     },
     {
       "source": "/docs",
-      "destination": "/api/index.py"
+      "destination": "https://civiclens-dt2k.onrender.com/docs"
     },
     {
       "source": "/openapi.json",
-      "destination": "/api/index.py"
+      "destination": "https://civiclens-dt2k.onrender.com/openapi.json"
     },
     {
       "source": "/uploads/(.*)",
-      "destination": "/api/index.py"
+      "destination": "https://civiclens-dt2k.onrender.com/uploads/$1"
     },
     {
       "source": "/(.*)",
