@@ -10,8 +10,8 @@ from .routers import auth, projects, analytics, alerts, documents, users, report
 
 # Initialize FastAPI App
 app = FastAPI(
-    title="Civclens API",
-    description="Civclens Integrated Project-Monitoring Platform Backend",
+    title="CivicLens API",
+    description="CivicLens Integrated Project-Monitoring Platform Backend",
     version="1.0.0"
 )
 
