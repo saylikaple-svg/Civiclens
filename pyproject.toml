@@ -16,6 +16,3 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "email-validator"
 ]
-
-[tool.vercel]
-entrypoint = "backend.app.main:app"
