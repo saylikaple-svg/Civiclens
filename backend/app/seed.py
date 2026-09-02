@@ -30,27 +30,53 @@ def seed_db():
         t_dept = deps[5].id
 
         print("Seeding users...")
-        default_password_hash = "$2b$12$.NyZCrQsVBL5TDLCyVzc9u3.9L.xwyXR2MzB8xnPBZ2Wi18QGkqP2"
+        pw_admin = get_password_hash("admin123")
+        pw_manager = get_password_hash("manager123")
+        pw_viewer = get_password_hash("viewer123")
+        pw_default = get_password_hash("password123")
+
         users = [
             User(
-                name="Super Admin",
-                email="admin@example.com",
-                password_hash=default_password_hash,
+                name="Super Admin (MoSPI)",
+                email="admin@mospi.gov.in",
+                password_hash=pw_admin,
                 role="SUPER_ADMIN",
                 status="Active"
             ),
             User(
-                name="Project Manager",
-                email="manager@example.com",
-                password_hash=default_password_hash,
+                name="Project Manager (MoRTH)",
+                email="manager@morth.gov.in",
+                password_hash=pw_manager,
                 role="PROJECT_MANAGER",
                 department_id=r_dept,
                 status="Active"
             ),
             User(
-                name="Decision Maker",
+                name="Public Officer / Citizen",
+                email="viewer@gov.in",
+                password_hash=pw_viewer,
+                role="VIEWER",
+                status="Active"
+            ),
+            User(
+                name="Super Admin Demo",
+                email="admin@example.com",
+                password_hash=pw_default,
+                role="SUPER_ADMIN",
+                status="Active"
+            ),
+            User(
+                name="Project Manager Demo",
+                email="manager@example.com",
+                password_hash=pw_default,
+                role="PROJECT_MANAGER",
+                department_id=r_dept,
+                status="Active"
+            ),
+            User(
+                name="Viewer Demo",
                 email="viewer@example.com",
-                password_hash=default_password_hash,
+                password_hash=pw_default,
                 role="VIEWER",
                 status="Active"
             ),
