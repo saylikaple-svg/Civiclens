@@ -38,16 +38,26 @@ def init_db_once():
         try:
             os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
             Base.metadata.create_all(bind=engine)
+            
+            needs_seed = False
             db = SessionLocal()
             try:
                 from .models import User
                 if db.query(User).count() == 0:
-                    from .seed import seed_db
-                    seed_db()
+                    needs_seed = True
             except Exception as e:
-                print(f"Database seed notice: {e}")
+                print(f"Database count check notice: {e}")
+                needs_seed = True
             finally:
                 db.close()
+                
+            if needs_seed:
+                try:
+                    from .seed import seed_db
+                    seed_db()
+                except Exception as e:
+                    print(f"Database seed notice: {e}")
+                    
             _db_initialized = True
         except Exception as e:
             print(f"Database initialization notice: {e}")

@@ -5,8 +5,7 @@ from .models import User, Department, Project, Milestone, Alert, Document
 from .auth import get_password_hash
 
 def seed_db():
-    print("Recreating database tables...")
-    Base.metadata.drop_all(bind=engine)
+    print("Ensuring database tables exist...")
     Base.metadata.create_all(bind=engine)
     
     db = SessionLocal()
