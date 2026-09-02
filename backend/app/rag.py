@@ -53,53 +53,28 @@ def chunk_text(text: str, chunk_size: int = 800, overlap: int = 150) -> List[Dic
 
 def retrieve_top_chunks(query: str, chunks: List[Dict[str, Any]], top_n: int = 3) -> List[Dict[str, Any]]:
     """
-    Uses TF-IDF + Cosine Similarity to find the top matching chunks for the query.
+    Finds the top matching chunks for the query using term frequency and relevance ranking.
     """
     if not chunks:
         return []
         
-    texts = [c["text"] for c in chunks]
-    
-    try:
-        from sklearn.feature_extraction.text import TfidfVectorizer
-        from sklearn.metrics.pairwise import cosine_similarity
-
-        # Vectorize chunks and query
-        vectorizer = TfidfVectorizer(stop_words='english')
-        tfidf_matrix = vectorizer.fit_transform(texts)
-        query_vec = vectorizer.transform([query])
+    results = []
+    query_words = [w.lower() for w in re.findall(r'\w+', query) if len(w) > 2]
+    if not query_words:
+        query_words = [query.lower()]
         
-        # Calculate similarity
-        similarities = cosine_similarity(query_vec, tfidf_matrix).flatten()
-        
-        # Sort indices
-        top_indices = similarities.argsort()[::-1][:top_n]
-        
-        results = []
-        for idx in top_indices:
-            # Only return chunks with some similarity
-            if similarities[idx] > 0.02:
-                results.append({
-                    "text": chunks[idx]["text"],
-                    "page": chunks[idx]["page"],
-                    "score": float(similarities[idx])
-                })
-        return results
-    except Exception as e:
-        print(f"Error in TF-IDF retrieval: {e}")
-        # Simplistic fallback word search
-        results = []
-        query_words = set(query.lower().split())
-        for chunk in chunks:
-            match_count = sum(1 for w in query_words if w in chunk["text"].lower())
-            if match_count > 0:
-                results.append({
-                    "text": chunk["text"],
-                    "page": chunk["page"],
-                    "score": match_count
-                })
-        results.sort(key=lambda x: x["score"], reverse=True)
-        return results[:top_n]
+    for chunk in chunks:
+        text_lower = chunk["text"].lower()
+        score = sum(text_lower.count(word) for word in query_words)
+        if score > 0:
+            results.append({
+                "text": chunk["text"],
+                "page": chunk["page"],
+                "score": float(score)
+            })
+            
+    results.sort(key=lambda x: x["score"], reverse=True)
+    return results[:top_n] if results else [chunks[0]]
 
 def call_gemini_api(prompt: str, api_key: str) -> str:
     """

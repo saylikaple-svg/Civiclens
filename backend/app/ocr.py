@@ -14,8 +14,7 @@ def extract_text_from_pdf(file_path: str) -> str:
                 page_text = page.extract_text()
                 if page_text:
                     text_content.append(f"--- Page {i+1} ---\n{page_text}")
-    except Exception as e:
-        print(f"Error reading PDF with pdfplumber: {e}")
+    except Exception:
         return ""
     
     return "\n\n".join(text_content)

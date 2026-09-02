@@ -30,18 +30,19 @@ def seed_db():
         t_dept = deps[5].id
 
         print("Seeding users...")
+        default_password_hash = "$2b$12$.NyZCrQsVBL5TDLCyVzc9u3.9L.xwyXR2MzB8xnPBZ2Wi18QGkqP2"
         users = [
             User(
                 name="Super Admin",
                 email="admin@example.com",
-                password_hash=get_password_hash("password123"),
+                password_hash=default_password_hash,
                 role="SUPER_ADMIN",
                 status="Active"
             ),
             User(
                 name="Project Manager",
                 email="manager@example.com",
-                password_hash=get_password_hash("password123"),
+                password_hash=default_password_hash,
                 role="PROJECT_MANAGER",
                 department_id=r_dept,
                 status="Active"
@@ -49,7 +50,7 @@ def seed_db():
             User(
                 name="Decision Maker",
                 email="viewer@example.com",
-                password_hash=get_password_hash("password123"),
+                password_hash=default_password_hash,
                 role="VIEWER",
                 status="Active"
             ),
